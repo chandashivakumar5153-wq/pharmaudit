@@ -1,0 +1,7 @@
+{
+  "name": "PharmAudit: Forensic Medicine Verifier",
+  "description": "A professional pharmaceutical forensic audit tool for detecting counterfeit medicines in the Indian market using multimodal AI and real-time CDSCO verification.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
