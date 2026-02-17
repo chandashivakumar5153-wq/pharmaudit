@@ -1,33 +1,35 @@
 
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
-import { ForensicReport } from "../types.ts";
+import { ForensicReport } from "../types";
 
 export class GeminiService {
-  constructor() {}
+  private ai: GoogleGenAI;
+
+  constructor() {
+    this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  }
 
   async analyzeMedicine(
     imageData: string,
     mimeType: string
   ): Promise<ForensicReport> {
-    // Initialize GoogleGenAI directly before the call to ensure the latest configuration is used.
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const model = 'gemini-3-pro-preview';
     
     const prompt = `
       Act as a Senior Pharmaceutical Forensic Auditor specialized in the Indian market (CDSCO standards).
-      Analyze this medicine packaging image.
+      Analyze this medicine packaging image/video.
       
       STAGE 1: EXTRACT DATA
       - Brand Name, Generic Name (API), Manufacturer, Address, Batch Number, Mfg/Exp Dates, License Number (DL No).
-      - Analyze logo placement, font, color consistency. Check for QR/DataMatrix.
+      - Analyze logo placement, font (detect poor clones), color consistency. Check for QR/DataMatrix.
 
       STAGE 2: VERIFICATION (Use Google Search Grounding)
-      - Verify if the License Number corresponds to the Manufacturer in CDSCO database.
-      - Check if Batch Number format matches standard formats for this specific manufacturer.
+      - Verify if the "License Number" corresponds to the "Manufacturer" in CDSCO database.
+      - Check if "Batch Number" format matches standard formats for this specific manufacturer.
       - Search for recent Drug Alerts or Recalls for this Brand or Batch in India (2025-2026).
 
       STAGE 3: FORENSIC REASONING
-      - Identify misspellings, blurry micro-text, or non-standard logo gradients.
+      - Identify misspellings (e.g. "Paracetimol"), blurry micro-text, or non-standard logo gradients.
       - Flag data mismatches.
 
       IMPORTANT: Provide a detailed analysis.
@@ -66,7 +68,7 @@ export class GeminiService {
     `;
 
     try {
-      const response: GenerateContentResponse = await ai.models.generateContent({
+      const response: GenerateContentResponse = await this.ai.models.generateContent({
         model,
         contents: {
           parts: [
@@ -80,10 +82,6 @@ export class GeminiService {
       });
 
       const text = response.text;
-      if (!text) {
-        throw new Error("Empty response from model.");
-      }
-      
       const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/);
       
       if (!jsonMatch) {
@@ -92,7 +90,7 @@ export class GeminiService {
 
       const report: ForensicReport = JSON.parse(jsonMatch[1]);
       
-      // Extract grounding sources from groundingMetadata.groundingChunks
+      // Extract grounding sources
       const sources: Array<{ title: string; uri: string }> = [];
       const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
       if (chunks) {

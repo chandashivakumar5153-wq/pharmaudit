@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ForensicReport } from '../types.ts';
+import { ForensicReport } from '../types';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 interface Props {
@@ -31,7 +31,7 @@ const ForensicDashboard: React.FC<Props> = ({ report, onReset }) => {
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6 animate-in fade-in duration-700">
-      {/* Forensic Recommendation - Top Section */}
+      {/* Forensic Recommendation - Moved to Top */}
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 rounded-2xl shadow-xl space-y-4 border border-blue-400/20">
         <h3 className="text-xl font-bold flex items-center gap-3">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
@@ -89,6 +89,7 @@ const ForensicDashboard: React.FC<Props> = ({ report, onReset }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Extracted Data Card */}
         <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700 space-y-4 shadow-inner">
           <h2 className="text-lg font-bold text-cyan-400 flex items-center gap-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
@@ -104,6 +105,7 @@ const ForensicDashboard: React.FC<Props> = ({ report, onReset }) => {
           </div>
         </div>
 
+        {/* Visual Forensics Card */}
         <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700 space-y-4">
           <h2 className="text-lg font-bold text-indigo-400 flex items-center gap-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
@@ -135,27 +137,28 @@ const ForensicDashboard: React.FC<Props> = ({ report, onReset }) => {
             )}
             <div className="pt-2 border-t border-slate-700/50">
               <div className={`text-center p-2 rounded text-[10px] font-bold uppercase tracking-widest ${report.visual_forensics.assets.qr_present ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-700/30 text-slate-500 border border-slate-700'}`}>
-                Security Markers: {report.visual_forensics.assets.qr_present ? 'DETECTED' : 'NOT DETECTED'}
+                QR/DataMatrix Security: {report.visual_forensics.assets.qr_present ? 'DETECTED' : 'NOT DETECTED'}
               </div>
             </div>
           </div>
         </div>
 
+        {/* Grounding & Verification Card */}
         <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700 space-y-4">
           <h2 className="text-lg font-bold text-emerald-400 flex items-center gap-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" /></svg>
-            Registry Check
+            CDSCO Verification
           </h2>
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div className={`p-3 rounded-xl border flex flex-col items-center justify-center text-center gap-1 ${report.grounding_check.manufacturer_verified ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-rose-500/10 border-rose-500/30'}`}>
-                <span className="text-[10px] uppercase text-slate-400 font-bold">Mfg Registry</span>
+                <span className="text-[10px] uppercase text-slate-400 font-bold">Registry</span>
                 <span className={`font-bold text-sm ${report.grounding_check.manufacturer_verified ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {report.grounding_check.manufacturer_verified ? 'VERIFIED' : 'FAILED'}
                 </span>
               </div>
               <div className={`p-3 rounded-xl border flex flex-col items-center justify-center text-center gap-1 ${report.grounding_check.batch_valid ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-rose-500/10 border-rose-500/30'}`}>
-                <span className="text-[10px] uppercase text-slate-400 font-bold">Batch Logic</span>
+                <span className="text-[10px] uppercase text-slate-400 font-bold">Batch</span>
                 <span className={`font-bold text-sm ${report.grounding_check.batch_valid ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {report.grounding_check.batch_valid ? 'VALID' : 'INVALID'}
                 </span>
@@ -163,7 +166,7 @@ const ForensicDashboard: React.FC<Props> = ({ report, onReset }) => {
             </div>
 
             <div>
-              <span className="text-xs font-bold text-slate-500 block mb-2 uppercase tracking-tighter">Market Alerts (2025-2026)</span>
+              <span className="text-xs font-bold text-slate-500 block mb-2 uppercase tracking-tighter">Drug Alerts (2025-2026)</span>
               {report.grounding_check.alerts_found.length > 0 ? (
                 <ul className="space-y-2">
                   {report.grounding_check.alerts_found.map((a, i) => (
@@ -176,13 +179,13 @@ const ForensicDashboard: React.FC<Props> = ({ report, onReset }) => {
               ) : (
                 <div className="text-sm text-emerald-400 bg-emerald-500/5 p-2 rounded border border-emerald-500/10 flex items-center gap-2">
                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
-                  Registry Clear
+                  Clearance confirmed
                 </div>
               )}
             </div>
 
             <div className="pt-2">
-              <span className="text-xs font-bold text-slate-500 block mb-2 uppercase tracking-widest">Evidence Links</span>
+              <span className="text-xs font-bold text-slate-500 block mb-2 uppercase tracking-widest">External Sources</span>
               <div className="flex flex-wrap gap-2">
                 {report.grounding_check.sources?.map((source, i) => (
                   <a 

@@ -1,8 +1,8 @@
 
-import React, { useState, useRef } from 'react';
-import { AnalysisStep, ForensicReport } from './types.ts';
-import { GeminiService } from './services/geminiService.ts';
-import ForensicDashboard from './components/ForensicDashboard.tsx';
+import React, { useState, useCallback, useRef } from 'react';
+import { AnalysisStep, ForensicReport } from './types';
+import { GeminiService } from './services/geminiService';
+import ForensicDashboard from './components/ForensicDashboard';
 
 const App: React.FC = () => {
   const [step, setStep] = useState<AnalysisStep>(AnalysisStep.IDLE);
