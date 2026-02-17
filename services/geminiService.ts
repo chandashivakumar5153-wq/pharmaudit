@@ -1,18 +1,16 @@
 
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
-import { ForensicReport } from "../types";
+import { ForensicReport } from "../types.ts";
 
 export class GeminiService {
-  private ai: GoogleGenAI;
-
-  constructor() {
-    this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-  }
+  constructor() {}
 
   async analyzeMedicine(
     imageData: string,
     mimeType: string
   ): Promise<ForensicReport> {
+    // Initialize GoogleGenAI directly before the call to ensure the latest configuration is used.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     const model = 'gemini-3-pro-preview';
     
     const prompt = `
@@ -68,7 +66,7 @@ export class GeminiService {
     `;
 
     try {
-      const response: GenerateContentResponse = await this.ai.models.generateContent({
+      const response: GenerateContentResponse = await ai.models.generateContent({
         model,
         contents: {
           parts: [
@@ -82,6 +80,10 @@ export class GeminiService {
       });
 
       const text = response.text;
+      if (!text) {
+        throw new Error("Empty response from model.");
+      }
+      
       const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/);
       
       if (!jsonMatch) {
@@ -90,7 +92,7 @@ export class GeminiService {
 
       const report: ForensicReport = JSON.parse(jsonMatch[1]);
       
-      // Extract grounding sources
+      // Extract grounding sources from groundingMetadata.groundingChunks
       const sources: Array<{ title: string; uri: string }> = [];
       const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
       if (chunks) {
