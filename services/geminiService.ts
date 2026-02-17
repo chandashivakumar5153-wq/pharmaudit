@@ -15,19 +15,19 @@ export class GeminiService {
     
     const prompt = `
       Act as a Senior Pharmaceutical Forensic Auditor specialized in the Indian market (CDSCO standards).
-      Analyze this medicine packaging image/video.
+      Analyze this medicine packaging image.
       
       STAGE 1: EXTRACT DATA
       - Brand Name, Generic Name (API), Manufacturer, Address, Batch Number, Mfg/Exp Dates, License Number (DL No).
-      - Analyze logo placement, font (detect poor clones), color consistency. Check for QR/DataMatrix.
+      - Analyze logo placement, font, color consistency. Check for QR/DataMatrix.
 
       STAGE 2: VERIFICATION (Use Google Search Grounding)
-      - Verify if the "License Number" corresponds to the "Manufacturer" in CDSCO database.
-      - Check if "Batch Number" format matches standard formats for this specific manufacturer.
+      - Verify if the License Number corresponds to the Manufacturer in CDSCO database.
+      - Check if Batch Number format matches standard formats for this specific manufacturer.
       - Search for recent Drug Alerts or Recalls for this Brand or Batch in India (2025-2026).
 
       STAGE 3: FORENSIC REASONING
-      - Identify misspellings (e.g. "Paracetimol"), blurry micro-text, or non-standard logo gradients.
+      - Identify misspellings, blurry micro-text, or non-standard logo gradients.
       - Flag data mismatches.
 
       IMPORTANT: Provide a detailed analysis.
